@@ -7,3 +7,7 @@ spring:
 
   jpa:
     show-sql: false
+
+user:
+  service:
+    url: http://localhost:8081
