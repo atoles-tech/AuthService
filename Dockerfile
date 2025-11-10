@@ -1,4 +1,4 @@
-FROM openjdk:21-slim
+FROM eclipse-temurin:21-jdk-alpine
 
 COPY /target/auth_service-0.0.1-SNAPSHOT.jar /auth-service/auth-service.jar
 
