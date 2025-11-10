@@ -38,14 +38,24 @@ public class AuthController {
         return new ResponseEntity<>(authService.register(request),HttpStatus.CREATED);
     }
 
-    @GetMapping("/validate")
+    @PostMapping("/validate")
     public ResponseEntity<Boolean> validate(@RequestBody @Valid ValidateTokenRequestDto request){
         return ResponseEntity.ok(authService.validate(request));
     }
 
-    @PostMapping("/refresh-token")
+    @GetMapping("/refresh-token")
     public ResponseEntity<RefreshTokenResponseDto> refreshToken(@RequestBody @Valid RefreshTokenRequestDto request){
         return ResponseEntity.ok(authService.refreshToken(request));
+    }
+
+    @PostMapping("/extract-role")
+    public ResponseEntity<String> extractRole(@RequestBody @Valid ValidateTokenRequestDto request){
+        return ResponseEntity.ok(authService.extractRole(request.getToken()));
+    }
+
+    @PostMapping("/extract-username")
+    public ResponseEntity<String> extractUsernmae(@RequestBody @Valid ValidateTokenRequestDto request){
+        return ResponseEntity.ok(authService.extractUsername(request.getToken()));
     }
 
     @PostMapping("/logout")

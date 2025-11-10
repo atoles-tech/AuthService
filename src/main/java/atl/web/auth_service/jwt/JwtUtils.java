@@ -43,6 +43,15 @@ public class JwtUtils {
             .compact();
     }
 
+    public String getRoleFromToken(String token){
+        return Jwts.parser()
+            .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .get("role",String.class);
+    }
+
     public String getUsernameFromToken(String token){
         return Jwts.parser()
             .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))

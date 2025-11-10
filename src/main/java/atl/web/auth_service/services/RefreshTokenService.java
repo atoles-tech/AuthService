@@ -81,4 +81,12 @@ public class RefreshTokenService {
     public Boolean validateToken(String token) {
         return jwtUtils.validateToken(token);
     }
+
+    public String extractRole(String token){
+        return jwtUtils.getRoleFromToken(token);
+    }
+
+    public String extractUsername(String token){
+        return jwtUtils.getUsernameFromToken(token);
+    }
 }

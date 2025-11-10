@@ -59,4 +59,12 @@ public class AuthService {
     public void logout(String userId){
         refreshTokenService.deactiveRefreshToken(credentialService.findByUserId(Long.valueOf(userId)));
     }
+
+    public String extractRole(String token){
+        return refreshTokenService.extractRole(token);
+    }
+
+    public String extractUsername(String token){
+        return refreshTokenService.extractUsername(token);
+    }
 }
