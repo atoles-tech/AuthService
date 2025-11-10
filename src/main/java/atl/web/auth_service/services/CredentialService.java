@@ -44,7 +44,7 @@ public class CredentialService {
             (null, response.getId(), request.getUsername(), encoder.encode(request.getPassword()), request.getRole(),null);
     
         Credential c = credentialRepository.save(credential);
-        return new RegistrationResponseDto(c.getId(), c.getUsername(),c.getRole());
+        return new RegistrationResponseDto(c.getUserId(), c.getUsername(),c.getRole());
     }
 
     public Credential findByUsername(String username){
