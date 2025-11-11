@@ -1,0 +1,33 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="create-refresh-tokens" author="atoles">
+        <createTable tableName="refresh_tokens">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="refresh_token" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="credential_id" type="BIGINT">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_credential_refresh_token" 
+                    references="credentials(id)"
+                    unique="true"
+                    deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="refresh_tokens" indexName="idx_refresh_tokens_credential_id">
+            <column name="credential_id"/>
+        </createIndex>
+
+    </changeSet>
+        
+</databaseChangeLog>

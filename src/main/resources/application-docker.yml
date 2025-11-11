@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: ${DB_URL_DOCKER}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: false
+
+user:
+  service:
+    url: http://host.docker.internal:8081
+
+jwt:
+  secret: ${JWT_SECRET}
