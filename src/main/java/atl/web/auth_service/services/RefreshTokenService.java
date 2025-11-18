@@ -86,7 +86,7 @@ public class RefreshTokenService {
         return jwtUtils.getRoleFromToken(token);
     }
 
-    public String extractUsername(String token){
-        return jwtUtils.getUsernameFromToken(token);
+    public String extractEmail(String token){
+        return jwtUtils.getEmailFromToken(token);
     }
 }

@@ -13,9 +13,9 @@ import lombok.Setter;
 @Setter
 public class AuthRequestDto {
 
-    @NotBlank(message = "Username must not be blank")
-    @Size(min = 5,message = "Username must be more than 5 characters")
-    private String username;
+    @NotBlank(message = "Email must not be blank")
+    @Size(min = 5,message = "Email must be more than 5 characters")
+    private String email;
 
     @NotBlank(message = "Password must not be blank")
     @Size(min = 8,message = "Password must be more than 8 characters")

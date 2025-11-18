@@ -21,10 +21,10 @@ public class UserDetailsServiceImpl implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Credential credential = credentialRepository
-            .findByUserId(Long.valueOf(username)).orElseThrow(()->new UsernameNotFoundException(username));
+            .findByEmail(username).orElseThrow(()->new UsernameNotFoundException(username));
         
         return User.builder()
-            .username(String.valueOf(credential.getUserId()))
+            .username(credential.getEmail())
             .password(credential.getPassword())
             .authorities(credential.getRole().name())
             .build();

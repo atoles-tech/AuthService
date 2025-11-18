@@ -28,7 +28,7 @@ public class AuthService {
 
     @Transactional
     public AuthReponseDto login(AuthRequestDto request){
-        Credential credential = credentialService.findByUsername(request.getUsername());
+        Credential credential = credentialService.findByEmail(request.getEmail());
 
 
         if(!encoder.matches(request.getPassword(), credential.getPassword())){
@@ -56,15 +56,15 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(String userId){
-        refreshTokenService.deactiveRefreshToken(credentialService.findByUserId(Long.valueOf(userId)));
+    public void logout(String email){
+        refreshTokenService.deactiveRefreshToken(credentialService.findByEmail(email));
     }
 
     public String extractRole(String token){
         return refreshTokenService.extractRole(token);
     }
 
-    public String extractUsername(String token){
-        return refreshTokenService.extractUsername(token);
+    public String extractEmail(String token){
+        return refreshTokenService.extractEmail(token);
     }
 }

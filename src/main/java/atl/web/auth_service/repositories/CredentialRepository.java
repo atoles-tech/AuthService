@@ -9,7 +9,6 @@ import atl.web.auth_service.model.Credential;
 
 @Repository
 public interface CredentialRepository extends JpaRepository<Credential,Long>{
-    Optional<Credential> findByUsername(String username);
-    Optional<Credential> findByUserId(Long userId);
-    Boolean existsByUsername(String username);
+    Optional<Credential> findByEmail(String email);
+    Boolean existsByEmail(String username);
 }

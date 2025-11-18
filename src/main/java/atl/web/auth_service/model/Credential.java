@@ -28,11 +28,8 @@ public class Credential{
     @Column(name = "id")
     private Long id;
 
-    @Column(name="user_id",nullable = false, unique = true)
-    private Long userId;
-
     @Column(length = 50, nullable = false, unique = true)
-    private String username;
+    private String email;
 
     @Column(length = 255, nullable = false)
     private String password;
