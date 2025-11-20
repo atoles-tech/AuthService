@@ -26,7 +26,7 @@ public class JwtUtils {
 
     public String generateAccessToken(Credential credential){
         return Jwts.builder()
-            .subject(credential.getUserId().toString())
+            .subject(credential.getEmail())
             .claim("role", credential.getRole())
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + accessTokenExp))
@@ -36,7 +36,7 @@ public class JwtUtils {
 
     public String generateRefreshToken(Credential credential){
         return Jwts.builder()
-            .subject(credential.getUserId().toString())
+            .subject(credential.getEmail())
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + refreshTokenExp))
             .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
@@ -52,7 +52,7 @@ public class JwtUtils {
             .get("role",String.class);
     }
 
-    public String getUsernameFromToken(String token){
+    public String getEmailFromToken(String token){
         return Jwts.parser()
             .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
             .build()

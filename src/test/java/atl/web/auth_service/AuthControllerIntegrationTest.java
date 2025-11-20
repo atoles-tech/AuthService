@@ -2,13 +2,10 @@ package atl.web.auth_service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import atl.web.auth_service.client.UserServiceClient;
 import atl.web.auth_service.dto.AuthReponseDto;
 import atl.web.auth_service.dto.AuthRequestDto;
 import atl.web.auth_service.dto.RegistrationRequestDto;
 import atl.web.auth_service.dto.RegistrationResponseDto;
-import atl.web.auth_service.dto.client.UserRequest;
-import atl.web.auth_service.dto.client.UserResponse;
 import atl.web.auth_service.model.Credential;
 import atl.web.auth_service.model.util.Role;
 import atl.web.auth_service.repositories.CredentialRepository;
@@ -23,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -31,10 +27,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,9 +48,6 @@ public class AuthControllerIntegrationTest {
     @Autowired
     private PasswordEncoder encoder;
 
-    @MockitoBean
-    private UserServiceClient client;
-
     @Container
     static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:17")
             .withDatabaseName("testdb")
@@ -75,7 +65,7 @@ public class AuthControllerIntegrationTest {
     }
 
     void createCredential() {
-        Credential credential = new Credential(null, 1L, "username", encoder.encode("username"), Role.ROLE_USER, null);
+        Credential credential = new Credential(null, "username@gmail.com", encoder.encode("username"), Role.ROLE_USER, null);
         credentialRepository.save(credential);
     }
 
@@ -93,7 +83,7 @@ public class AuthControllerIntegrationTest {
     @DisplayName("Should return token when user exists")
     void shouldReturnToken_WhenCredentialExists() throws Exception {
         createCredential();
-        AuthRequestDto requestDto = new AuthRequestDto("username", "username");
+        AuthRequestDto requestDto = new AuthRequestDto("username@gmail.com", "username");
 
         MvcResult login = mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +103,7 @@ public class AuthControllerIntegrationTest {
     @DisplayName("Should return conflict status")
     void shouldReturnConflictStatus_WhenPasswordIsIncorrect() throws Exception {
         createCredential();
-        AuthRequestDto requestDto = new AuthRequestDto("username", "useruseruser");
+        AuthRequestDto requestDto = new AuthRequestDto("username@gmail.com", "useruseruser");
 
         MvcResult login = mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +119,7 @@ public class AuthControllerIntegrationTest {
     @Test
     @DisplayName("Should return not found status when credential not found")
     void shouldReturnNotFoundStatus_WhenCredentialNotFound() throws Exception {
-        AuthRequestDto requestDto = new AuthRequestDto("username", "useruseruser");
+        AuthRequestDto requestDto = new AuthRequestDto("username@gmail.com", "useruseruser");
 
         MvcResult login = mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -140,14 +130,14 @@ public class AuthControllerIntegrationTest {
         String responseContent = login.getResponse().getContentAsString();
         System.out.println(responseContent);
 
-        assertEquals("Username 'username' not found", responseContent);
+        assertEquals("Username 'username@gmail.com' not found", responseContent);
     }
 
     @Test
     @DisplayName("Should return same refresh token when user trying auth more than 1 time")
     void shouldReturnSameRefreshToken_WhenUserHasMoreThan1Auth() throws Exception {
         createCredential();
-        AuthRequestDto requestDto = new AuthRequestDto("username", "username");
+        AuthRequestDto requestDto = new AuthRequestDto("username@gmail.com", "username");
 
         MvcResult login = mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -172,14 +162,7 @@ public class AuthControllerIntegrationTest {
     @Test
     @DisplayName("Should return register response when register request is correct")
     void shouldReturnRegisterResponse_WhenUserTryingRegisterCorrect() throws Exception {
-        RegistrationRequestDto request = new RegistrationRequestDto("name", "surname", LocalDate.of(2006, 1, 1),
-                "evgenijkhodosok@gmail.com", "username", "username", Role.ROLE_USER);
-        UserRequest userRequest = new UserRequest("name", "surname", LocalDate.of(2006, 1, 1),
-                "evgenijkhodosok@gmail.com");
-        UserResponse userResponse = new UserResponse(1L, "name", "surname", LocalDate.of(2006, 1, 1),
-                "evgenijkhodosok@gmail.com");
-
-        when(client.createUser(userRequest)).thenReturn(userResponse);
+        RegistrationRequestDto request = new RegistrationRequestDto("username@gmail.com", "username", Role.ROLE_USER);
         MvcResult register = mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
@@ -189,8 +172,7 @@ public class AuthControllerIntegrationTest {
         String responseContent = register.getResponse().getContentAsString();
         RegistrationResponseDto response = objectMapper.readValue(responseContent, RegistrationResponseDto.class);
 
-        assertEquals("username", response.getUsername());
-        assertEquals(1L, response.getId());
+        assertEquals("username@gmail.com", response.getEmail());;
         assertEquals(Role.ROLE_USER, response.getRole());
     }
 
@@ -198,8 +180,7 @@ public class AuthControllerIntegrationTest {
     @DisplayName("Should return conflict status when username already exists")
     void shouldReturnConflictStatus_WhenUsernameAlreadyExists() throws Exception{
         createCredential();
-        RegistrationRequestDto request = new RegistrationRequestDto("name", "surname", LocalDate.of(2006, 1, 1),
-                "evgenijkhodosok@gmail.com", "username", "username", Role.ROLE_USER);
+        RegistrationRequestDto request = new RegistrationRequestDto("username@gmail.com", "username", Role.ROLE_ADMIN);
 
         MvcResult register = mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -209,7 +190,7 @@ public class AuthControllerIntegrationTest {
 
         String responseContent = register.getResponse().getContentAsString();
        
-        assertEquals("Username 'username' already exists", responseContent);
+        assertEquals("Email 'username@gmail.com' already exists", responseContent);
     }
 
 }

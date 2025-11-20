@@ -53,9 +53,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.extractRole(request.getToken()));
     }
 
-    @PostMapping("/extract-username")
-    public ResponseEntity<String> extractUsernmae(@RequestBody @Valid ValidateTokenRequestDto request){
-        return ResponseEntity.ok(authService.extractUsername(request.getToken()));
+    @PostMapping("/extract-email")
+    public ResponseEntity<String> extractEmail(@RequestBody @Valid ValidateTokenRequestDto request){
+        return ResponseEntity.ok(authService.extractEmail(request.getToken()));
     }
 
     @PostMapping("/logout")
