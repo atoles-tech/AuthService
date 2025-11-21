@@ -12,7 +12,7 @@ server:
 
 spring:
   application:
-    name: auth_service
+    name: auth-service
   profiles:
     active: local
   

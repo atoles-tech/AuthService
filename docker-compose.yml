@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: admin
     ports:
       - "5433:5432"
+    networks:
+      - app-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -22,6 +24,12 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
       - postgres
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
 
 volumes:
   postgres_data:
