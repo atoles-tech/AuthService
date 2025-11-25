@@ -34,6 +34,11 @@ public class CredentialService {
         return new RegistrationResponseDto(c.getId(), c.getEmail(),c.getRole());
     }
 
+    @Transactional
+    public void deleteById(Long id){
+        credentialRepository.deleteById(id);
+    } 
+
     public Credential findByEmail(String email){
         return credentialRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException(email));

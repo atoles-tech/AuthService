@@ -42,6 +42,11 @@ public class AuthService {
     }
 
     @Transactional
+    public void deleteCredential(Long id){
+        credentialService.deleteById(id);
+    }
+
+    @Transactional
     public RegistrationResponseDto register(RegistrationRequestDto request){
         return credentialService.createCredential(request);
     }
@@ -67,4 +72,5 @@ public class AuthService {
     public String extractEmail(String token){
         return refreshTokenService.extractEmail(token);
     }
+
 }
