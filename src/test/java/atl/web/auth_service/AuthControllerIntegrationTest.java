@@ -62,6 +62,7 @@ public class AuthControllerIntegrationTest {
 
         registry.add("spring.liquibase.enabled", () -> "false");
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
+        registry.add("eureka.client.enabled", () -> "false");
     }
 
     void createCredential() {

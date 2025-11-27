@@ -10,9 +10,18 @@ management:
 server:
   port: 8082
 
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    eureka-service-url-poll-interval-seconds: 3
+    eureka-server-connect-timeout-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 30
+
 spring:
   application:
-    name: auth_service
+    name: auth-service
   profiles:
     active: local
   
